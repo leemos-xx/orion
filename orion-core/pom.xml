@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>leemos</groupId>
+		<artifactId>orion</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>orion-core</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>leemos</groupId>
+			<artifactId>orion-commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>leemos</groupId>
+			<artifactId>orion-config</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scannotation</groupId>
+			<artifactId>scannotation</artifactId>
+			<version>1.0.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javassist</groupId>
+					<artifactId>javassist</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.27.0-GA</version>
+		</dependency>
+		<dependency>
+			<groupId>com.esotericsoftware.yamlbeans</groupId>
+			<artifactId>yamlbeans</artifactId>
+			<version>1.15</version>
+		</dependency>
+	</dependencies>
+</project>

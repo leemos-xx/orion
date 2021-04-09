@@ -1,0 +1,34 @@
+@startuml
+
+interface Engine
+
+interface InvocationContext {
+	-Class targetClass
+	-Method targetMethod
+}
+
+interface BeanFactory {
+	+getBean(Class targetClass)
+}
+
+class SceneDefinition {
+	-boolean isSingleton
+	-Class targetClass
+	-ApiDefinition[] apiDefinitions
+}
+
+class ApiDefinition {
+	-boolean isAsync
+	-Method method
+}
+
+class AnnotationScanner {
+	+SceneDefinition[] loadSceneDefinition()
+}
+
+AnnotationScanner --> SceneDefinition
+SceneDefinition *-- ApiDefinition
+Engine *-- InvocationContext
+Engine --> BeanFactory
+Engine --> AnnotationScanner
+@enduml

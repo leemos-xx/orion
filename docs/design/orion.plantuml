@@ -1,0 +1,196 @@
+@startuml
+package io.netty.channel {
+    interface ChannelHandler
+    interface ChannelHandlerContext
+}
+package leemos.orion.server {
+
+	' base
+	interface Named
+    interface Mapper
+    interface Scannable
+	
+	' lifecycle
+	interface Lifecycle
+	enum LifecycleStatus
+	class LifecycleEvent
+	interface LifecycleListener
+	abstract class LifecycleSupport
+
+	' infrastructure
+	interface Server
+	interface Service
+	interface Connector
+    interface MessageBus
+    interface Engine
+	
+    ' message
+    interface Message
+	abstract class RequestMessage
+    abstract class ResponseMessage
+    class InvokeContext
+	
+	package leemos.orion.server.core {
+		class StandardServer
+		class StandardService
+        class StandardMessageBus
+        class StandardEngine
+		
+		' ------------------------------------------
+		' define the relations between classes
+		' ------------------------------------------
+		StandardServer ..|> Server
+        StandardServer --|> LifecycleSupport
+		StandardService ..|> Service
+        StandardService --|> LifecycleSupport
+        StandardMessageBus ..|> MessageBus
+        StandardMessageBus --|> LifecycleSupport
+        StandardEngine ..|> Engine
+        StandardEngine --|> LifecycleSupport
+	}
+	
+	package leemos.orion.server.core.connector {
+        abstract ConnectorBase
+		
+        class Connection
+        class ConnectionPool
+		interface ConnectionFactory
+		interface ConnectionManager
+        interface InvokeFuture
+        class DefaultInvokeFuture
+
+        interface Protocol
+        class ProtocolManager
+        enum ProtocolCode
+        interface Codec
+        interface Handler
+        interface Encoder
+        interface Decoder
+        interface Serializer
+        interface Deserializer
+
+        package leemos.orion.server.core.connector.rpc {
+            class RpcConnector
+            class RpcConnectionFactory
+            class RpcConnectionManager
+
+            class RpcProtocol
+            class RpcCodec
+            class RpcHandler
+            class RpcEncoder
+            class RpcDecoder
+
+            class RpcRequestMessage
+            class RpcResponseMessage
+
+            ' ------------------------------------------
+            ' define the relations between classes
+            ' ------------------------------------------
+            RpcConnector --|> ConnectorBase
+            RpcConnectionFactory --|> ConnectionFactory
+            RpcConnectionManager --|> ConnectionManager
+            RpcConnectionManager --> RpcConnectionFactory
+            RpcConnector --> RpcConnectionManager
+
+            RpcProtocol --|> Protocol
+            RpcHandler --> Handler
+            RpcCodec --|> Codec
+            RpcEncoder --|> Encoder
+            RpcDecoder --|> Decoder
+            RpcRequestMessage --|> RequestMessage
+            RpcResponseMessage --|> ResponseMessage
+
+            RpcHandler --> RpcProtocol
+            RpcProtocol --> RpcCodec
+            RpcCodec --> RpcEncoder
+            RpcCodec --> RpcDecoder
+
+            RpcHandler ..> RpcRequestMessage
+            RpcHandler ..> RpcResponseMessage
+        }
+
+        package leemos.orion.server.core.connector.serialize {
+            class HessianSerializer
+            class HessianDeserializer
+
+            ' ------------------------------------------
+            ' define the relations between classes
+            ' ------------------------------------------
+            HessianSerializer --|> Serializer
+            HessianDeserializer --|> Deserializer
+        }
+
+        ' ------------------------------------------
+		' define the relations between classes
+		' ------------------------------------------
+        ConnectorBase ..|> Connector
+        ConnectorBase --|> LifecycleSupport
+        ConnectionPool ..|> Scannable
+        ConnectionPool *-- Connection
+        ConnectionFactory ..> Connection
+        ConnectionManager ..|> Scannable
+        ConnectionManager --> ConnectionFactory
+        ConnectionManager --> ConnectionPool
+        DefaultInvokeFuture --|> InvokeFuture
+        Connection --> InvokeFuture
+
+        ProtocolManager ..> Protocol
+        ProtocolManager ..> ProtocolCode
+        Protocol --> Codec
+        Protocol --> Handler
+        Codec --> Encoder
+        Encoder --> Serializer
+        Codec --> Decoder
+        Decoder --> Deserializer
+
+        RpcConnector ..> ProtocolManager
+        RpcConnector --> RpcProtocol
+        RpcConnector --> RpcHandler
+
+        Handler --|> ChannelHandler
+	}
+	
+	package leemos.orion.server.util {
+		
+		' i18n
+		class StringManager
+
+        class Url
+        interface AddressParser
+        class RpcAddressParser
+
+        ' ------------------------------------------
+        ' define the relations between classes
+        ' ------------------------------------------
+        RpcAddressParser --|> AddressParser
+		
+	}
+	
+	' ------------------------------------------
+	' define the relations between classes
+	' ------------------------------------------
+	Lifecycle o-- LifecycleListener
+	LifecycleListener --> LifecycleEvent
+	LifecycleEvent --> LifecycleStatus
+	LifecycleSupport ..|> Lifecycle
+	
+	Server --|> Named
+	Server o-- Service
+	
+	Service --|> Named
+	Service *-- Connector
+    Service --> MessageBus
+
+    Connector --|> Named
+
+    MessageBus --|> Named
+    MessageBus --|> Mapper
+    MessageBus ..> InvokeContext
+
+    RequestMessage --|> Message
+    ResponseMessage --|> Message
+
+    InvokeContext --> RequestMessage
+    InvokeContext --> ChannelHandlerContext
+}
+@enduml

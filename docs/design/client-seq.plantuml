@@ -1,0 +1,46 @@
+@startuml
+participant RpcClient
+participant RpcClientRemoting
+participant DefaultConnectionManager
+
+RpcClient --> RpcClientRemoting: invokeWithFuture(url, requestObject)
+activate RpcClient
+activate RpcClientRemoting
+
+RpcClientRemoting --> DefaultConnectionManager: getAndCreateIfAbsent(url)
+activate DefaultConnectionManager
+
+DefaultConnectionManager --> ConnectionFactory: create(url)
+activate ConnectionFactory
+
+ConnectionFactory --> DefaultConnectionManager : return conn
+deactivate ConnectionFactory
+
+DefaultConnectionManager --> ConnectionPool: put conn
+activate ConnectionPool
+ConnectionPool --> DefaultConnectionManager: return conn
+deactivate ConnectionPool
+
+DefaultConnectionManager --> RpcClientRemoting: return conn
+deactivate DefaultConnectionManager
+
+RpcClientRemoting --> RpcClientRemoting: create invoke future
+RpcClientRemoting --> RpcClientRemoting: send request object
+
+RpcClientRemoting --> Channel: encode&decode&write&read
+activate Channel
+Channel --> RpcClientRemoting: future.putResponse()
+deactivate Channel
+deactivate RpcClientRemoting
+
+RpcClientRemoting --> RpcClient: return invoke future
+deactivate RpcClient
+
+RpcClient --> InvokeFuture: future.get()
+activate RpcClient
+activate InvokeFuture
+
+InvokeFuture --> RpcClient: return response object
+deactivate InvokeFuture
+deactivate RpcClient
+@enduml
