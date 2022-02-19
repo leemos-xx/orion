@@ -18,6 +18,7 @@ import leemos.orion.Configs;
 import leemos.orion.codec.rpc.OrionCodec;
 import leemos.orion.codec.rpc.OrionProtocol;
 import leemos.orion.commons.NamedThreadFactory;
+import leemos.orion.config.ConnectorConfig;
 import leemos.orion.core.ConnectorBase;
 import leemos.orion.lifecycle.LifecycleException;
 import leemos.orion.remoting.ConnectionEventHandler;
@@ -44,12 +45,8 @@ public class OrionConnector extends ConnectorBase {
     private OrionProtocol protocol = new OrionProtocol();
     private OrionCodec codec = new OrionCodec(protocol);
 
-    public OrionConnector(int port) {
-        super(port);
-    }
-
-    public OrionConnector(String ip, int port) {
-        super(ip, port);
+    public OrionConnector(ConnectorConfig connectorConfig) {
+        super(connectorConfig);
     }
 
     /*
@@ -57,6 +54,8 @@ public class OrionConnector extends ConnectorBase {
      */
     @Override
     protected void initializeInternal() throws LifecycleException {
+        setName(getConfig().getName());
+
         bootstrap = new ServerBootstrap();
         acceptorGroup = EventLoopUtils.newEventLoopGroup(1,
                 new NamedThreadFactory("orion-server-acceptor", false));
@@ -67,8 +66,8 @@ public class OrionConnector extends ConnectorBase {
         bootstrap.group(acceptorGroup, ioGroup)
                 .channel(EventLoopUtils.getServerChannelClass())
                 .option(ChannelOption.SO_BACKLOG, 1024)
-//                .option(ChannelOption.TCP_NODELAY, true)
-//                .option(ChannelOption.SO_KEEPALIVE, true)
+                // .option(ChannelOption.TCP_NODELAY, true)
+                // .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.SO_BACKLOG, 1024);
 
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {

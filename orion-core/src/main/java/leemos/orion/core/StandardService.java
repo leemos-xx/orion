@@ -2,6 +2,7 @@ package leemos.orion.core;
 
 import cn.hutool.core.util.StrUtil;
 import leemos.orion.Connector;
+import leemos.orion.ConnectorFactory;
 import leemos.orion.Engine;
 import leemos.orion.EventBus;
 import leemos.orion.Server;
@@ -176,10 +177,10 @@ public class StandardService extends LifecycleSupport implements Service {
         setEngine(engine);
 
         for (ConnectorConfig connectorConfig: serviceConfig.getConnectors()) {
-            addConnector(ConnectorFactory.createConnector(connectorConfig));
-        }
-        for (int i = 0; i < connectors.length; i++) {
-            connectors[i].initialize();
+            Connector connector = ConnectorFactory.createConnector(connectorConfig);
+            connector.setEventBus(eventBus);
+            connector.setService(this);
+            addConnector(connector);
         }
     }
 

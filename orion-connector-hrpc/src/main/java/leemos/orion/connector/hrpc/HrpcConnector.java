@@ -18,6 +18,7 @@ import leemos.orion.Configs;
 import leemos.orion.codec.hrpc.HrpcProtocol;
 import leemos.orion.codec.hrpc.HrpcServerCodec;
 import leemos.orion.commons.NamedThreadFactory;
+import leemos.orion.config.ConnectorConfig;
 import leemos.orion.core.ConnectorBase;
 import leemos.orion.lifecycle.LifecycleException;
 import leemos.orion.remoting.ConnectionEventHandler;
@@ -45,16 +46,14 @@ public class HrpcConnector extends ConnectorBase {
     private HrpcProtocol protocol = new HrpcProtocol();
     private HrpcServerCodec codec = new HrpcServerCodec(protocol);
 
-    public HrpcConnector(int port) {
-        super(port);
-    }
-
-    public HrpcConnector(String ip, int port) {
-        super(ip, port);
+    public HrpcConnector(ConnectorConfig connectorConfig) {
+        super(connectorConfig);
     }
 
     @Override
     protected void initializeInternal() throws LifecycleException {
+        setName(getConfig().getName());
+
         bootstrap = new ServerBootstrap();
         acceptorGroup = EventLoopUtils.newEventLoopGroup(1,
                 new NamedThreadFactory("http-server-acceptor", false));
@@ -65,8 +64,8 @@ public class HrpcConnector extends ConnectorBase {
         bootstrap.group(acceptorGroup, ioGroup)
                 .channel(EventLoopUtils.getServerChannelClass())
                 .option(ChannelOption.SO_BACKLOG, 1024)
-//                .option(ChannelOption.TCP_NODELAY, true)
-//                .option(ChannelOption.SO_KEEPALIVE, true)
+                // .option(ChannelOption.TCP_NODELAY, true)
+                // .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.SO_BACKLOG, 1024);
 
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {

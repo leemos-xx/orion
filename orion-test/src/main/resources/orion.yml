@@ -5,7 +5,7 @@ adminPort: 10615
 services: 
  - name: orion-service
    eventBus: 
-      !leemos.orion.core.bus.config.QueueEventBusConfig
+      !leemos.orion.config.QueueEventBusConfig
       type: queued
       name: orion-event-bus
       eventQueuedSize: 2000
@@ -14,12 +14,12 @@ services:
       name: orion-engine
    connectors:
     - name: orion-connector
-      protocol: orion
+      protocol: leemos.orion.connector.rpc.OrionConnector
       ip: 127.0.0.1
       port: 10880
       ioThreads: 8
     - name: http-connector
-      protocol: http
+      protocol: leemos.orion.connector.hrpc.HrpcConnector
       ip: 127.0.0.1
       port: 10881
       ioThreads: 8888

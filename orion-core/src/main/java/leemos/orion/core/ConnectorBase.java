@@ -1,12 +1,11 @@
 package leemos.orion.core;
 
-import java.net.InetSocketAddress;
-
 import leemos.orion.Connector;
 import leemos.orion.Constants;
 import leemos.orion.EventBus;
 import leemos.orion.Service;
 import leemos.orion.commons.StringManager;
+import leemos.orion.config.ConnectorConfig;
 import leemos.orion.lifecycle.LifecycleSupport;
 import leemos.orion.remoting.Protocol;
 
@@ -19,17 +18,12 @@ import leemos.orion.remoting.Protocol;
  */
 public abstract class ConnectorBase extends LifecycleSupport implements Connector {
 
-    private static final StringManager sm = StringManager.getManager(Constants.PACKAGE);
+    protected static final StringManager sm = StringManager.getManager(Constants.PACKAGE);
 
     /**
-     * 监听的ip
+     * Connector config
      */
-    private String ip;
-
-    /**
-     * 监听的端口
-     */
-    private int port;
+    private ConnectorConfig config;
 
     /**
      * 关联的{@link Service}
@@ -46,17 +40,8 @@ public abstract class ConnectorBase extends LifecycleSupport implements Connecto
      */
     private Protocol protocol;
 
-    public ConnectorBase(int port) {
-        this(new InetSocketAddress(port).getAddress().getHostAddress(), port);
-    }
-
-    public ConnectorBase(String ip, int port) {
-        if (port < 0 || port > 65535) {
-            throw new IllegalArgumentException(sm.getString(
-                    "connectorBase.constructor.illegalPort", String.valueOf(port)));
-        }
-        this.ip = ip;
-        this.port = port;
+    public ConnectorBase(ConnectorConfig connectorConfig) {
+        this.config = connectorConfig;
     }
 
     /*
@@ -64,7 +49,7 @@ public abstract class ConnectorBase extends LifecycleSupport implements Connecto
      */
     @Override
     public String getIp() {
-        return ip;
+        return this.config.getIp();
     }
 
     /*
@@ -72,7 +57,7 @@ public abstract class ConnectorBase extends LifecycleSupport implements Connecto
      */
     @Override
     public int getPort() {
-        return port;
+        return this.config.getPort();
     }
 
     /*
@@ -121,6 +106,15 @@ public abstract class ConnectorBase extends LifecycleSupport implements Connecto
     @Override
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
+    }
+    
+    /**
+     * 获取配置
+     *
+     * @return
+     */
+    public ConnectorConfig getConfig() {
+        return config;
     }
 
 }
