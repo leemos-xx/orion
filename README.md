@@ -188,25 +188,22 @@ about marker byte：
 +------+------+------+------+---------------------------+
 ```
 
+### 4.2 功能说明
+![功能说明](https://images.gitee.com/uploads/images/2020/0912/112022_7ac5c7b2_7580843.png "2020-09-12 11-19-39屏幕截图.png")
 
+### 4.3 内部逻辑
+![内部逻辑](https://images.gitee.com/uploads/images/2020/0912/112310_16b02055_7580843.png "2020-09-12 11-22-37屏幕截图.png")
 
-#### orion引擎
-orion 引擎部分概要功能和结构设计如下图所示：
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0912/112022_7ac5c7b2_7580843.png "2020-09-12 11-19-39屏幕截图.png")
+### 4.4 orion UML
+![uml](https://images.gitee.com/uploads/images/2020/0821/164833_a9d3c59d_7580843.png "orion.png")
 
-orion 内部数据流：
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0912/112310_16b02055_7580843.png "2020-09-12 11-22-37屏幕截图.png")
+### 4.5 orion client同步调用流程设计：
+![client](https://images.gitee.com/uploads/images/2020/0821/164919_8db86069_7580843.png "client-call.png")
 
-orion 引擎部分UML类图设计如下所示：
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0821/164833_a9d3c59d_7580843.png "orion.png")
+### 4.6 线程模型
+![thead model](https://images.gitee.com/uploads/images/2020/0805/155229_2ce4d3a6_7580843.png "2020-08-05 15-51-13屏幕截图.png")
 
-orion client同步调用流程设计：
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0821/164919_8db86069_7580843.png "client-call.png")
-
-orion 线程模型如下图所示：
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0805/155229_2ce4d3a6_7580843.png "2020-08-05 15-51-13屏幕截图.png")
-
-8C单机初步压测结果：
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0907/155329_8175637a_7580843.png "cpu.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0907/155338_7e6ea80b_7580843.png "tps.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0907/155347_81269955_7580843.png "rsp-time.png") **粗体** 
+### 4.7 压测数据
+![cpu](https://images.gitee.com/uploads/images/2020/0907/155329_8175637a_7580843.png "cpu.png")
+![tps](https://images.gitee.com/uploads/images/2020/0907/155338_7e6ea80b_7580843.png "tps.png")
+![rsp](https://images.gitee.com/uploads/images/2020/0907/155347_81269955_7580843.png "rsp-time.png") 
