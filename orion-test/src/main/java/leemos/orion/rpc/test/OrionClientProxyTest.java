@@ -20,7 +20,7 @@ public class OrionClientProxyTest {
         }
 
         Proxy proxy = new JdkProxy();
-        ProxyInvoker proxyInvoker = new JdkProxyInvoker(client);
+        ProxyInvoker proxyInvoker = new JdkProxyInvoker("localhost:10880", client);
 
         CounterScene counterScene = proxy.getProxy(CounterScene.class, proxyInvoker);
         int result = counterScene.increase();

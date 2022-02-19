@@ -1,4 +1,4 @@
-package leemos.orion.hrpc.test;
+package leemos.orion.example;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -6,20 +6,19 @@ import leemos.orion.Server;
 import leemos.orion.core.StandardServer;
 import leemos.orion.lifecycle.LifecycleException;
 
-public class HrpcServerTest {
-
+public class ExampleServer {
     private Server server;
     private CountDownLatch latch = new CountDownLatch(1);
 
-    public HrpcServerTest() {
-        setup();
+    public ExampleServer() {
     }
-    
+
     public static void main(String[] args) throws LifecycleException {
-        new HrpcServerTest().start();
+        new ExampleServer().start();
     }
 
     public void start() throws LifecycleException {
+        server = new StandardServer();
         try {
             server.start();
             latch.await();
@@ -34,17 +33,5 @@ public class HrpcServerTest {
         } finally {
             latch.countDown();
         }
-    }
-
-    /**
-     * 引导对server的配置
-     */
-    private void setup() {
-        server = createDefaultServer();
-    }
-
-    private Server createDefaultServer() {
-        Server server = new StandardServer();
-        return server;
     }
 }

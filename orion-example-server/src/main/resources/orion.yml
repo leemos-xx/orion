@@ -1,0 +1,20 @@
+projectName: orion-sample
+projectVersion: 1.0
+serverName: orion-server
+adminPort: 10615
+services: 
+ - name: orion-service
+   eventBus: 
+      !leemos.orion.config.QueueEventBusConfig
+      type: queued
+      name: orion-event-bus
+      eventQueuedSize: 2000
+      discardTimeoutMillis: 5000
+   engine:
+      name: orion-engine
+   connectors:
+    - name: orion-connector
+      protocol: leemos.orion.connector.rpc.OrionConnector
+      ip: 127.0.0.1
+      port: 10880
+      ioThreads: 8

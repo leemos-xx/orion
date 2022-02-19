@@ -8,21 +8,21 @@ import leemos.orion.remoting.message.RpcResponse;
 
 public class JdkProxyInvoker implements ProxyInvoker {
 
+    private String address;
     private Client client;
 
-    public JdkProxyInvoker(Client client) {
+    public JdkProxyInvoker(String addresss, Client client) {
+        this.address = addresss;
         this.client = client;
     }
 
     @Override
-    public RpcResponse invoke(RequestBody requestBody) {
+    public RpcResponse invoke(RequestBody requestBody) throws InterruptedException, RemotingException {
         try {
-            return client.invokeAsync("localhost:8888", requestBody, 5000).waitResponse();
+            return client.invokeAsync(address, requestBody, 5000).waitResponse();
         } catch (InterruptedException | RemotingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw e;
         }
-        return null;
     }
 
 }

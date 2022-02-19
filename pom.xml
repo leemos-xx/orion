@@ -94,5 +94,8 @@
 		<module>orion-client-hrpc</module>
 		<module>orion-client</module>
 		<module>orion-config</module>
+		<module>orion-example-server</module>
+		<module>orion-example</module>
+		<module>orion-example-client</module>
 	</modules>
 </project>
