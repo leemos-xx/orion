@@ -1,4 +1,4 @@
-package leemos.orion.client.proxy;
+package leemos.orion.client.proxy.jdk;
 
 import java.lang.reflect.InvocationHandler;
 
