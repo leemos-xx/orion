@@ -68,7 +68,7 @@ public class DefaultConnectionManager extends LifecycleSupport
         try {
             // 获取或者创建连接池
             pool = this.getConnectionPoolAndCreateIfAbsent(poolKey,
-                    new ConnectionPoolCallable());
+                    new ConnectionPoolCallable(poolKey));
         } catch (Exception e) {
             logger.error(sm.getString("defaultConnectionManager.add.emptyPool"), e);
         }
@@ -173,7 +173,7 @@ public class DefaultConnectionManager extends LifecycleSupport
     public Connection getAndCreateIfAbsent(Url url)
             throws InterruptedException, RemotingException {
         ConnectionPool pool = getConnectionPoolAndCreateIfAbsent(url.getUniqueKey(),
-                new ConnectionPoolCallable(url));
+                new ConnectionPoolCallable(url.getUniqueKey(), url));
         if (null != pool) {
             return pool.get();
         } else {
@@ -334,12 +334,19 @@ public class DefaultConnectionManager extends LifecycleSupport
          */
         private Url url;
 
-        public ConnectionPoolCallable() {
+        /**
+         * 连接池标识
+         */
+        private String poolKey;
+
+        public ConnectionPoolCallable(String poolKey) {
             this.whetherInitConnection = false;
+            this.poolKey = poolKey;
         }
 
-        public ConnectionPoolCallable(Url url) {
+        public ConnectionPoolCallable(String poolKey, Url url) {
             this.whetherInitConnection = true;
+            this.poolKey = poolKey;
             this.url = url;
         }
 
@@ -348,7 +355,7 @@ public class DefaultConnectionManager extends LifecycleSupport
             final ConnectionPool pool = new ConnectionPool(selectStrategy);
             if (whetherInitConnection) {
                 try {
-                    createConnections(this.url, pool, this.getClass().getSimpleName(), 1);
+                    createConnections(poolKey, this.url, pool, this.getClass().getSimpleName(), 1);
                 } catch (Exception e) {
                     pool.removeAllAndTryClose();
                     throw e;
@@ -362,13 +369,14 @@ public class DefaultConnectionManager extends LifecycleSupport
     /**
      * 创建所有连接，并置入连接池
      *
+     * @param poolKey
      * @param url
      * @param pool
      * @param taskName
      * @param syncCreateNumWhenNotWarmup
      * @throws RemotingException
      */
-    private void createConnections(Url url, ConnectionPool pool, String taskName,
+    private void createConnections(String poolKey, Url url, ConnectionPool pool, String taskName,
             int syncCreateNumWhenNotWarmup) throws RemotingException {
         int actualNum = pool.size();
         int expectNum = url.getConnectionNum();
@@ -380,12 +388,14 @@ public class DefaultConnectionManager extends LifecycleSupport
         if (url.isConnectionWarmup()) {
             for (int i = actualNum; i < expectNum; i++) {
                 Connection connection = create(url);
+                connection.setPoolKey(poolKey);
                 pool.add(connection);
             }
         } else {
             if (syncCreateNumWhenNotWarmup > 0) {
                 for (int i = 0; i < syncCreateNumWhenNotWarmup; ++i) {
                     Connection connection = create(url);
+                    connection.setPoolKey(poolKey);
                     pool.add(connection);
                 }
                 if (syncCreateNumWhenNotWarmup >= url.getConnectionNum()) {
@@ -405,6 +415,7 @@ public class DefaultConnectionManager extends LifecycleSupport
                                 Connection connection = null;
                                 try {
                                     connection = create(url);
+                                    connection.setPoolKey(poolKey);
                                 } catch (RemotingException e) {
                                     logger.error(e.getMessage(), e);
                                 }
