@@ -109,7 +109,7 @@ public class ExampleClient {
         client.start();
 
         // 获取代理后的Pay
-        Pay payScene = ClientProxy.getProxy("127.0.0.1:10880", Pay.class, proxyInvoker);
+        Pay payScene = ClientProxy.getProxy("127.0.0.1:10880", Pay.class, client);
 
         // 进行rpc远程调用并处理结果
         PayResponse response = payScene.pay(new PayRequest("62250000", "62251100", 10.24));
