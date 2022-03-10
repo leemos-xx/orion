@@ -108,16 +108,13 @@ public class ExampleClient {
         OrionClient client = new OrionClient();
         client.start();
 
-        Proxy proxy = new JdkProxy();
-        ProxyInvoker proxyInvoker = new JdkProxyInvoker("127.0.0.1:10880", client);
-
         // 获取代理后的Pay
-        Pay payScene = proxy.getProxy(Pay.class, proxyInvoker);
+        Pay payScene = ClientProxy.getProxy("127.0.0.1:10880", Pay.class, proxyInvoker);
 
         // 进行rpc远程调用并处理结果
         PayResponse response = payScene.pay(new PayRequest("62250000", "62251100", 10.24));
         if (response.isStatus()) {
-            System.out.println("successed");
+            System.out.println("succeeded");
         } else {
             System.out.println("failed: " + response.getMessage());
         }

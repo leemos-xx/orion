@@ -1,8 +1,9 @@
-package leemos.orion.client.proxy;
+package leemos.orion.client.proxy.jdk;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import leemos.orion.core.ServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +43,10 @@ public class JdkInvocationHandler<T> implements InvocationHandler {
         requestBody.setServiceName(service.name());
         requestBody.setParameters(args);
 
-        // FIXME 处理异常
         RpcResponse rpcResponse = proxyInvoker.invoke(requestBody);
+        if (rpcResponse.getResponseBody() instanceof  Throwable) {
+            throw new ServerException((Throwable) rpcResponse.getResponseBody());
+        }
 
         return rpcResponse.getResponseBody();
     }

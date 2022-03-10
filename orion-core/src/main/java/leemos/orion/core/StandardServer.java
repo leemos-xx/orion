@@ -1,6 +1,6 @@
 package leemos.orion.core;
 
-import java.io.FileNotFoundException;
+import java.io.*;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -164,8 +164,8 @@ public class StandardServer extends LifecycleSupport implements Server {
      * 从orion.yml中读取并解析配置
      */
     private ServerConfig readServerConfig() throws FileNotFoundException, YamlException {
-        YamlReader serverConfigReader = new YamlReader(
-                new FileReader(ORION_CONFIG_PATH).readString());
+        InputStream in = StandardServer.class.getClassLoader().getResourceAsStream(ORION_CONFIG_PATH);
+        YamlReader serverConfigReader = new YamlReader(new BufferedReader(new InputStreamReader(in)));
         return serverConfigReader.read(ServerConfig.class);
     }
 
