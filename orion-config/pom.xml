@@ -3,7 +3,7 @@
   <parent>
     <groupId>leemos</groupId>
     <artifactId>orion</artifactId>
-    <version>release-1.0.0</version>
+    <version>release-1.0.1</version>
   </parent>
   <artifactId>orion-config</artifactId>
 </project>
